@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'); 
+const bcrypt = require('bcrypt')
 
 var userSchema = new mongoose.Schema({
     firstname:{
@@ -23,8 +24,24 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    role : {
+      type: String,
+      default : "user"
+    }
 });
 
+userSchema.pre('save', async function (next) {
+  const user = this
+
+  if(user.isModified('password')){
+    user.password =  await bcrypt.hash(user.password,8);
+  }
+  next();
+})
+
+userSchema.methods.isPasswordMatched = async function(enteredPassword){
+  return await bcrypt.compare(enteredPassword, this.password)
+}
 const User = mongoose.model('User', userSchema);
 //Export the model
 module.exports = User;
