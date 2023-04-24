@@ -35,4 +35,5 @@ const isAdminMiddleware = asyncHandler(
     }
   }
 )
+
 module.exports = {authMiddleware,isAdminMiddleware}
