@@ -52,7 +52,7 @@ const getallUsers = asyncHandler(
 const getUser = asyncHandler(
   async (req,res) => {
     try{
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.user._id);
       res.json(user)
     }catch(error){
       throw new Error(error);
@@ -63,7 +63,7 @@ const getUser = asyncHandler(
 const deleteUser = asyncHandler(
   async (req,res) => {
     try{
-      const user = await User.findByIdAndDelete(req.params.id);
+      const user = await User.findByIdAndDelete(req.user.id);
       res.json(user)
     }catch(error){
       throw new Error(error);
@@ -74,7 +74,7 @@ const deleteUser = asyncHandler(
 const updateUser = asyncHandler(
   async (req,res) => {
     try{
-      const user = await User.findByIdAndUpdate(req.params.id, req.body , {new:true});
+      const user = await User.findByIdAndUpdate(req.user.id, req.body , {new:true});
       res.json(user)
     }catch(error){
       throw new Error(error);
