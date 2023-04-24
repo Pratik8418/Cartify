@@ -1,6 +1,9 @@
 const User = require('../models/user')
 const asyncHandler = require('express-async-handler');
 const {genereteToken} = require('../config/jwtToken')
+const { validateMongoID } = require('../utils/validateMondoDBId');
+const { genereteRefreshToken } = require('../config/refreshToken');
+
 
 const creteUser = asyncHandler(
   async (req,res) => {
@@ -51,6 +54,7 @@ const getallUsers = asyncHandler(
 
 const getUser = asyncHandler(
   async (req,res) => {
+    validateMongoID(req.user._id)
     try{
       const user = await User.findById(req.user._id);
       res.json(user)
@@ -62,6 +66,7 @@ const getUser = asyncHandler(
 
 const deleteUser = asyncHandler(
   async (req,res) => {
+    validateMongoID(req.user._id)
     try{
       const user = await User.findByIdAndDelete(req.user.id);
       res.json(user)
@@ -72,7 +77,9 @@ const deleteUser = asyncHandler(
 )
 
 const updateUser = asyncHandler(
+  
   async (req,res) => {
+    validateMongoID(req.user._id)
     try{
       const user = await User.findByIdAndUpdate(req.user.id, req.body , {new:true});
       res.json(user)
