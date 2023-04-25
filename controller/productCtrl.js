@@ -8,4 +8,17 @@ const createProduct = asyncHandler(
   }
 )
 
-module.exports = { createProduct }
+const getProduct = asyncHandler(
+  async (req,res) => {
+    const product = await Product.findById(req.params.id)
+    res.json(product)
+  }
+)
+
+const getAllProduct = asyncHandler(
+  async (req,res) => {
+    const products = await Product.find({});
+    res.json(products)
+  }
+)
+module.exports = { createProduct, getProduct,getAllProduct }
