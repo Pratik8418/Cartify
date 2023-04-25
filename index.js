@@ -2,9 +2,11 @@ const express = require('express')
 const dbConnect = require('./config/dbConnect')
 const dotenv = require("dotenv").config();
 const authRoute = require('./routes/authRoute');
+const productRoute = require('./routes/productRoute')
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const cookieParser = require('cookie-parser')
+
 
 const PORT = process.env.PORT || 4000;
 dbConnect();
@@ -19,7 +21,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.use('/api/user',authRoute)
-
+app.use('/api/product',productRoute)
 
 app.use(notFound);
 app.use(errorHandler);
