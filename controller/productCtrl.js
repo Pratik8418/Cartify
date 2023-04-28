@@ -58,4 +58,6 @@ const deleteProduct = asyncHandler(
  }
 )
 
+
+//add filter and sorting in progress
 module.exports = { createProduct, getProduct,getAllProduct }
