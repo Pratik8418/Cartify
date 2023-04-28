@@ -21,4 +21,21 @@ const getAllProduct = asyncHandler(
     res.json(products)
   }
 )
+
+const updateProduct = asyncHandler(
+  async (req,res) => {
+    const id = req.params.id;
+    const product = await Product.findByIdAndUpdate(id,req.body,{ new: true});
+    res.json(product)
+  }
+)
+
+const deleteProduct = asyncHandler(
+ async (req,res) => {
+     const id = req.params.id;
+     const product = await Product.findByIdAndDelete(id);
+     res.json(product);
+ }
+)
+
 module.exports = { createProduct, getProduct,getAllProduct }
