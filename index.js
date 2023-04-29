@@ -6,12 +6,15 @@ const productRoute = require('./routes/productRoute')
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const cookieParser = require('cookie-parser')
+const morgan = require('morgan')
 
 
 const PORT = process.env.PORT || 4000;
 dbConnect();
-const app = express();
 
+
+const app = express();
+app.use(morgan('dev'))
 // app.use('/', (req,res) => {
 //   res.send("Welcome to Cartify")
 // })

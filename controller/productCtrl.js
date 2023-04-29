@@ -1,9 +1,13 @@
 const Product = require('../models/productModel')
 const asyncHandler = require('express-async-handler')
+const slugify = require('slugify')
 
 const createProduct = asyncHandler(
   async (req,res) => {
     try{
+      if(req.body.title){
+        req.body.slug = slugify(req.body.title);
+      }
     const product = await Product.create(req.body)
     res.json(product);
     }catch(error){
@@ -26,7 +30,8 @@ const getProduct = asyncHandler(
 const getAllProduct = asyncHandler(
   async (req,res) => {
     try{
-    const products = await Product.find({});
+      console.log(req.query);
+    const products = await Product.find(req.query);
     res.json(products)
      }catch(error){
     throw new Error(error);
@@ -37,6 +42,9 @@ const getAllProduct = asyncHandler(
 const updateProduct = asyncHandler(
   async (req,res) => {
     try{
+      if(req.body.title){
+        req.body.slug = slugify(req.body.title);
+      }
     const id = req.params.id;
     const product = await Product.findByIdAndUpdate(id,req.body,{ new: true});
     res.json(product)
@@ -60,4 +68,4 @@ const deleteProduct = asyncHandler(
 
 
 //add filter and sorting in progress
-module.exports = { createProduct, getProduct,getAllProduct }
+module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct }
