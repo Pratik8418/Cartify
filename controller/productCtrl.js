@@ -1,6 +1,7 @@
 const Product = require('../models/productModel')
 const asyncHandler = require('express-async-handler')
-const slugify = require('slugify')
+const slugify = require('slugify');
+const { validateMongoID } = require('../utils/validateMondoDBId');
 
 const createProduct = asyncHandler(
   async (req,res) => {
@@ -106,6 +107,5 @@ const deleteProduct = asyncHandler(
  }
 )
 
-
 //add filter and sorting in progress
-module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct }
+module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct}
