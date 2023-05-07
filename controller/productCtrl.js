@@ -58,6 +58,19 @@ const getAllProduct = asyncHandler(
       query = query.select('-__v');
     }
 
+    //Pagination
+
+    const page = req.query.page;
+    const limit = req.query.limit;
+    const skip = (page-1)*limit;
+    query = await query.skip(skip).limit(limit);
+    if(req.query.page){
+      const productCount = await Product.countDocuments();
+      if(skip >= productCount){
+        throw new Error("This page is not exit");
+      }
+    }
+
     const products = await query;
     res.json(products)
      }catch(error){
