@@ -4,6 +4,7 @@ const {genereteToken} = require('../config/jwtToken')
 const { validateMongoID } = require('../utils/validateMondoDBId');
 const { genereteRefreshToken } = require('../config/refreshToken');
 const jwt = require('jsonwebtoken');
+const sendMail = require('./emailCtrl');
 
 
 const creteUser = asyncHandler(
@@ -177,6 +178,35 @@ const updatePassword = asyncHandler(
   }
 )
 
+const forgotPassword = asyncHandler(
+  async (req,res) => {
+   const  {email}  = req.body;
+   //console.log(email);
+   const user = await User.findOne({email});
+   if(!user){
+    throw new Error("User is not available on this email Id");
+   }
+
+   try{
+       const token = await user.createPasswordResetToken();
+       await user.save();
+       const refreshURL = `Hii, Please follow this link for reset your Password. This link is valid till 10 minutes till now <a href="http://localhost:5000/api/user/forgotPaasword/${token}"> Click here </a>`;
+
+       const data = {
+        to: email,
+        text: "Hey, User",
+        subject: "Forgot Password Link",
+        htm: refreshURL
+       }
+       console.log(token);
+       sendMail(data);
+       res.json(token);
+   }catch(error){
+    throw new Error(error);
+   }
+  }
+)
+
 module.exports = {
   creteUser,
   loginUser,
@@ -186,5 +216,6 @@ module.exports = {
   updateUser,
   handleRefreshToken,
   logoutUser,
-  updatePassword
+  updatePassword,
+  forgotPassword
 }
