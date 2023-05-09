@@ -190,7 +190,7 @@ const forgotPassword = asyncHandler(
    try{
        const token = await user.createPasswordResetToken();
        await user.save();
-       const refreshURL = `Hii, Please follow this link for reset your Password. This link is valid till 10 minutes till now <a href="http://localhost:5000/api/user/forgotPaasword/${token}"> Click here </a>`;
+       const refreshURL = `Hii, Please follow this link for reset your Password. This link is valid till 10 minutes till now <a href="http://localhost:5000/api/user/resetPassword/${token}"> Click here </a>`;
 
        const data = {
         to: email,
@@ -207,6 +207,19 @@ const forgotPassword = asyncHandler(
   }
 )
 
+const resetPassword = asyncHandler(
+  async (req,res) => {
+    const token = req.params.token;
+    const {password} = req.body;
+    const user = await User.findOne({passwordResetToken : token});
+    if(!user){
+      throw new Error("Your token is Expired")
+    }
+    user = await User.findOneAndUpdate({passwordResetToken : token},{password},{new:true});
+    res.json(user);
+  }
+)
+
 module.exports = {
   creteUser,
   loginUser,
@@ -217,5 +230,6 @@ module.exports = {
   handleRefreshToken,
   logoutUser,
   updatePassword,
-  forgotPassword
+  forgotPassword,
+  resetPassword
 }
