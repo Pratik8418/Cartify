@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 var blogSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -37,7 +36,7 @@ var blogSchema = new mongoose.Schema({
     },
     Image: {
         type: String,
-        default: ""
+        default: "https://images.pexels.com/photos/1591056/pexels-photo-1591056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     },
     author: {
         type: String,
