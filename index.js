@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 const authRoute = require('./routes/authRoute');
 const productRoute = require('./routes/productRoute')
 const blogRoute = require('./routes/blogRoute');
+const categoryRoute = require('./routes/categoryRoute')
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const cookieParser = require('cookie-parser')
@@ -27,7 +28,7 @@ app.use(cookieParser());
 app.use('/api/user',authRoute)
 app.use('/api/product',productRoute)
 app.use('/api/blog',blogRoute)
-
+app.use('/api/category',categoryRoute)
 app.use(notFound);
 app.use(errorHandler);
 
