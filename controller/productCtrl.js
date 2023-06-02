@@ -135,7 +135,7 @@ const rating = asyncHandler(
    async (req,res) => {
     try{
        const {_id} = req.user;
-       const {star,prodId} = req.body;
+       const {star,prodId,comment} = req.body;
 
        const product = await Product.findById(prodId)
        const alreadyRated = product.ratings.find( (userId) => userId.postedBy.toString() === _id.toString());
@@ -150,7 +150,7 @@ const rating = asyncHandler(
        }else{
            const product = await Product.findByIdAndUpdate(
             prodId,
-            { $push : { ratings : { star : star, postedBy : _id }}},
+            { $push : { ratings : { star : star,  comment: comment, postedBy : _id }}},
             {new : true}
            )
 
