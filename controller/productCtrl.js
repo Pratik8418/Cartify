@@ -174,5 +174,16 @@ const rating = asyncHandler(
     }
    }
 )
+
+const uploadImages = asyncHandler(
+  async (req,res) => {
+    try{
+     console.log(req.files)
+    }catch(error){
+      throw new Error(error);
+    }
+  }
+)
+
 //add filter and sorting in progress
-module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct,addToWishlist,rating}
+module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct,addToWishlist,rating, uploadImages}
