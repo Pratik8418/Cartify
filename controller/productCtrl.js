@@ -2,7 +2,11 @@ const Product = require('../models/productModel')
 const User = require('../models/user')
 const asyncHandler = require('express-async-handler')
 const slugify = require('slugify');
+const fs = require("fs");
 const { validateMongoID } = require('../utils/validateMondoDBId');
+const {
+  cloudinaryUploadImg,
+} = require('../utils/cloudnairy');
 
 const createProduct = asyncHandler(
   async (req,res) => {
@@ -177,9 +181,24 @@ const rating = asyncHandler(
 
 const uploadImages = asyncHandler(
   async (req,res) => {
-    try{
-     console.log(req.files)
-    }catch(error){
+    try {
+      const uploader = (path) => { cloudinaryUploadImg(path, "images"); }
+      const urls = [];
+      const files = req.files;
+      for (const file of files) {
+        
+        const { path } = file;
+        
+        const newpath = await uploader(path);
+        //console.log(newpath);
+        urls.push(newpath);
+        fs.unlinkSync(path);
+      }
+      const images = urls.map((file) => {
+        return file;
+      });
+      res.json(images);
+    } catch (error) {
       throw new Error(error);
     }
   }
