@@ -1,4 +1,6 @@
 const User = require('../models/user')
+const Cart = require('../models/cartModel')
+const Product = require('../models/productModel')
 const asyncHandler = require('express-async-handler');
 const {genereteToken} = require('../config/jwtToken')
 const { validateMongoID } = require('../utils/validateMondoDBId');
@@ -260,6 +262,47 @@ const resetPassword = asyncHandler(
     }
     user = await User.findOneAndUpdate({passwordResetToken : token},{password},{new:true});
     res.json(user);
+  }
+)
+
+// Cart
+const userCart = asyncHandler(
+  async (req,res) => {
+    try{
+      const {cart} = req.body;
+      const {_id} = req.user;
+
+      const user = await User.findById(_id);
+      const alredyExitCart = await Cart.findOne({orderBy : user._id })
+      let products = [];
+      if(alredyExitCart){ alredyExitCart.remove(); }
+
+      for(let i = 0; i < cart.lenth; i++){
+        let object = {};
+        object.product = cart[i]._id;
+        object.count = cart[i].count;
+        object.color = cart[i].color;
+        const getPrice = await Product.findById(cart[i]._id).select("price").exec();
+        object.price = getPrice.price;
+        products.push(object);
+      }
+      
+      let totalprice = 0;
+      for(let i = 0; products.length; i++){
+        totalprice += products[i].price * products[i].count;
+      }
+      
+      const newCart = await new Cart({
+        products,
+        totalPrice,
+        orderBy: user?._id,
+      }).save()
+     
+      res.json(newCart);
+
+    }catch(error){
+      throw new Error(error);
+    }
   }
 )
 
