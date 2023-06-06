@@ -311,6 +311,69 @@ const userCart = asyncHandler(
   }
 )
 
+const getUserCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+   
+    try {
+        const cart = await Cart.findOne({ orderby: _id }).populate(
+            "products.product"
+        );
+        res.json(cart);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+   
+    try {
+        const user = await User.findOne({ _id });
+        const cart = await Cart.findOneAndRemove({ orderby: user._id });
+        res.json(cart);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const applyCoupon = asyncHandler(async (req, res) => {
+    const { coupon } = req.body;
+    const { _id } = req.user;
+    
+    const validCoupon = await Coupon.findOne({ name: coupon });
+    if (validCoupon === null) {
+        throw new Error("Invalid Coupon");
+    }
+    const user = await User.findOne({ _id });
+
+    let { cartTotal } = await Cart.findOne({
+        orderby: user._id,
+    }).populate("products.product");
+
+    let totalAfterDiscount = (
+        cartTotal -
+        (cartTotal * validCoupon.discount) / 100
+    ).toFixed(2);
+
+    await Cart.findOneAndUpdate(
+        { orderby: user._id },
+        { totalAfterDiscount },
+        { new: true }
+    );
+    res.json(totalAfterDiscount);
+});
+
+const saveAddress = asyncHandler(async (req, res, next) => {
+    const { _id } = req.user;
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(_id, { address: req.body.address }, {new: true });
+        res.json(updatedUser);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
 module.exports = {
   creteUser,
   loginUser,
@@ -324,5 +387,9 @@ module.exports = {
   forgotPassword,
   resetPassword,
   loginAdmin,
-  userCart
+  userCart,
+  getUserCart,
+  emptyCart,
+  applyCoupon,
+  saveAddress,
 }
