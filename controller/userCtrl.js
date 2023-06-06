@@ -275,21 +275,25 @@ const userCart = asyncHandler(
       const user = await User.findById(_id);
       const alredyExitCart = await Cart.findOne({orderBy : user._id })
       let products = [];
-      console.log(alredyExitCart);
-      if(alredyExitCart){ alredyExitCart.remove(); }
+      
+      if(alredyExitCart){ 
+         await Cart.findOneAndRemove({orderBy : user._id });
+      }
 
       for(let i = 0; i < cart.length; i++){
         let object = {};
         object.product = cart[i]._id;
         object.count = cart[i].count;
         object.color = cart[i].color;
-        const getPrice = await Product.findById(cart[i]._id).select("price").exec();
+        let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+       
         object.price = getPrice.price;
         products.push(object);
       }
       
       let totalPrice = 0;
       for(let i = 0; products.length; i++){
+        console.log(products[i].price);
         totalPrice += products[i].price * products[i].count;
       }
       
