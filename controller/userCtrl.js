@@ -292,7 +292,7 @@ const userCart = asyncHandler(
       }
       
       let totalPrice = 0;
-      for(let i = 0; products.length; i++){
+      for(let i = 0; i < products.length; i++){
         console.log(products[i].price);
         totalPrice += products[i].price * products[i].count;
       }
