@@ -271,13 +271,14 @@ const userCart = asyncHandler(
     try{
       const {cart} = req.body;
       const {_id} = req.user;
-
+      
       const user = await User.findById(_id);
       const alredyExitCart = await Cart.findOne({orderBy : user._id })
       let products = [];
+      console.log(alredyExitCart);
       if(alredyExitCart){ alredyExitCart.remove(); }
 
-      for(let i = 0; i < cart.lenth; i++){
+      for(let i = 0; i < cart.length; i++){
         let object = {};
         object.product = cart[i]._id;
         object.count = cart[i].count;
@@ -287,9 +288,9 @@ const userCart = asyncHandler(
         products.push(object);
       }
       
-      let totalprice = 0;
+      let totalPrice = 0;
       for(let i = 0; products.length; i++){
-        totalprice += products[i].price * products[i].count;
+        totalPrice += products[i].price * products[i].count;
       }
       
       const newCart = await new Cart({
@@ -318,5 +319,6 @@ module.exports = {
   updatePassword,
   forgotPassword,
   resetPassword,
-  loginAdmin
+  loginAdmin,
+  userCart
 }
