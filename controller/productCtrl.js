@@ -202,5 +202,7 @@ const uploadImages = asyncHandler(
   }
 )
 
+
+
 //add filter and sorting in progress
 module.exports = { createProduct, getProduct,getAllProduct,updateProduct,deleteProduct,addToWishlist,rating, uploadImages}
